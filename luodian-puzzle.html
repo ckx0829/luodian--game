@@ -31,6 +31,21 @@
             position: relative;
         }
 
+        .page-logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 150px;
+            height: auto;
+            z-index: 100;
+        }
+
+        .page-logo img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
         body::before {
             content: '';
             position: fixed;
@@ -883,6 +898,9 @@
 <body>
     <div class="container">
         <div class="page page-center active" id="start-page">
+            <div class="page-logo">
+                <img src="./images/logo.png" alt="Logo">
+            </div>
             <div class="sakura-decoration">🌸</div>
             <div class="sakura-decoration sakura-2">🌸</div>
             <div class="sakura-decoration sakura-3">🌸</div>
@@ -907,6 +925,9 @@
         </div>
 
         <div class="page" id="map-page">
+            <div class="page-logo">
+                <img src="./images/logo.png" alt="Logo">
+            </div>
             <div class="sakura-decoration" style="top: 5%; left: 5%;">🌸</div>
             <div class="sakura-decoration sakura-2" style="top: 10%; right: 10%;">🌸</div>
             <div class="map-container">
@@ -941,6 +962,9 @@
         </div>
 
         <div class="page" id="game-page">
+            <div class="page-logo">
+                <img src="./images/logo.png" alt="Logo">
+            </div>
             <div class="sakura-decoration" style="top: 3%; left: 3%;">🌸</div>
             <div class="sakura-decoration sakura-2" style="top: 5%; right: 5%;">🌸</div>
             <div class="game-container">
@@ -970,6 +994,9 @@
         </div>
 
         <div class="page page-center" id="certificate-page">
+            <div class="page-logo">
+                <img src="./images/logo.png" alt="Logo">
+            </div>
             <div class="sakura-decoration" style="top: 5%; left: 5%;">🌸</div>
             <div class="sakura-decoration sakura-2" style="top: 8%; right: 8%;">🌸</div>
             <div class="sakura-decoration sakura-3" style="bottom: 15%; left: 10%;">🌸</div>
