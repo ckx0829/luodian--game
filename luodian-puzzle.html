@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>校园螺钿非遗书签</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -1139,9 +1140,10 @@
                 slidingGame: `
                     <li>点击空白格相邻的方块移动</li>
                     <li>将数字按1-8顺序排列</li>
-                    <li>完成排列获得能量</li>
-                    <li>用时越短获得能量越多</li>
+                    <li>简单版通关获得25能量</li>
+                    <li>复杂版通关获得50能量</li>
                 `
+                
             };
             return instructions[gameType] || '';
         }
@@ -2127,15 +2129,13 @@
                 }
 
                 isSolved = true;
-                const baseEnergy = 80;
-                const timeBonus = Math.max(0, 200 - timeElapsed);
-                const energyMultiplier = gameDifficulty === 'hard' ? 2 : 1;
-                currentEnergy = (baseEnergy + timeBonus) * energyMultiplier;
+                // 简单版通关给25能量，复杂版给50能量
+                currentEnergy = gameDifficulty === 'hard' ? 50 : 25;
                 const slidingEnergyDisplay = document.getElementById('sliding-energy');
                 slidingEnergyDisplay.textContent = currentEnergy;
 
                 setTimeout(() => {
-                    const bonusText = gameDifficulty === 'hard' ? '（双倍能量奖励！）' : '';
+                    const bonusText = gameDifficulty === 'hard' ? '（复杂版奖励！）' : '';
                     showModal('🎉', '恭喜完成！', `你成功完成了华容道！获得能量：${currentEnergy} ${bonusText}`);
                     setTimeout(() => endGame(), 2000);
                 }, 500);
@@ -2351,23 +2351,65 @@
         }
 
         function shareCertificate() {
-            if (navigator.share) {
-                navigator.share({
-                    title: '樱韵螺钿·校园地标探索证书',
-                    text: `我在樱韵螺钿·校园地标探索中获得了${gameData.totalEnergy}能量，等级：${document.getElementById('bookmark-level').textContent}`,
-                    url: window.location.href
-                })
-                .catch((error) => console.log('分享失败:', error));
-            } else {
-                // 复制链接到剪贴板
-                navigator.clipboard.writeText(window.location.href)
-                .then(() => {
-                    showModal('📋', '分享成功', '证书链接已复制到剪贴板！');
-                })
-                .catch((error) => {
-                    showModal('❌', '分享失败', '复制链接失败，请手动复制地址栏链接。');
-                });
-            }
+            const certificateContainer = document.querySelector('.certificate-container');
+            
+            // 显示加载提示
+            showModal('⏳', '正在生成证书', '请稍候...');
+            
+            // 使用html2canvas生成证书图片
+            html2canvas(certificateContainer, {
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: null,
+                scale: 2,
+                logging: false,
+                onclone: function(clonedDoc) {
+                    const clonedContainer = clonedDoc.querySelector('.certificate-container');
+                    clonedContainer.style.backgroundImage = 'none';
+                    clonedContainer.style.backgroundColor = '#fff8dc';
+                    clonedContainer.style.border = '3px solid #d4af37';
+                }
+            }).then(canvas => {
+                closeModal();
+                
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = `樱韵螺钿证书_${gameData.playerName}.png`;
+                
+                // 尝试使用Web Share API分享图片
+                if (navigator.share && navigator.canShare) {
+                    canvas.toBlob(blob => {
+                        const file = new File([blob], '樱韵螺钿证书.png', { type: 'image/png' });
+                        
+                        if (navigator.canShare({ files: [file] })) {
+                            navigator.share({
+                                title: '樱韵螺钿·校园地标探索证书',
+                                text: `我在樱韵螺钿·校园地标探索中获得了${gameData.totalEnergy}能量，等级：${document.getElementById('bookmark-level').textContent}`,
+                                files: [file]
+                            })
+                            .catch((error) => {
+                                console.log('分享失败:', error);
+                                // 分享失败时下载图片
+                                link.click();
+                                showModal('📋', '分享成功', '证书图片已下载，请手动分享！');
+                            });
+                        } else {
+                            // 不支持分享文件时直接下载
+                            link.click();
+                            showModal('📋', '分享成功', '证书图片已下载，请手动分享！');
+                        }
+                    });
+                } else {
+                    // 不支持Web Share API时下载图片
+                    link.click();
+                    showModal('📋', '分享成功', '证书图片已下载，请手动分享！');
+                }
+            }).catch(error => {
+                console.error('生成证书图片失败:', error);
+                closeModal();
+                showModal('❌', '分享失败', '生成证书图片失败，请稍后再试。');
+            });
         }
 
         function showModal(icon, title, text) {
