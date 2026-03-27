@@ -542,10 +542,9 @@
             text-align: center;
             margin-bottom: 30px;
             letter-spacing: 5px;
-            background: linear-gradient(135deg, var(--chinese-red) 0%, #e85a71 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            /* 简化为纯色文字，避免html2canvas渲染问题 */
+            color: var(--chinese-red);
+            font-weight: bold;
         }
 
         .certificate-content {
@@ -1123,7 +1122,7 @@
                     <li>吃掉比自己小的鱼获得能量（每条+5能量）</li>
                     <li>吃掉比自己小的鱼后体积增大（+2px）</li>
                     <li>碰到比自己大的鱼或炸弹游戏结束</li>
-                    <li>游戏时间60秒，鱼会越来越大，炸弹越来越多</li>
+                    <li>游戏时间30秒，鱼会越来越大，炸弹越来越多</li>
                 `,
                 tetrisGame: `
                     <li>使用方向键移动和旋转方块</li>
@@ -1175,7 +1174,7 @@
             const canvas = document.getElementById('game-canvas');
             canvas.innerHTML = `
                 <div class="fish-game-canvas" id="fish-canvas">
-                    <div class="fish-timer">时间: <span id="fish-time">60</span>s</div>
+                    <div class="fish-timer">时间: <span id="fish-time">30</span>s</div>
                     <div class="fish-score">能量: <span id="fish-energy">0</span></div>
                     <div class="player-fish" id="player-fish">🐟</div>
                 </div>
@@ -1189,7 +1188,7 @@
             let playerX = 275;
             let playerY = 175;
             let playerSize = 40;
-            let timeLeft = 60;
+            let timeLeft = 30;
             let fishes = [];
             let gameElapsedTime = 0;
 
@@ -1573,7 +1572,7 @@
                 }
             });
 
-            gameInterval = setInterval(gameLoop, 300);
+            gameInterval = setInterval(gameLoop, 200);
         }
 
         function moveTetrisLeft() {
@@ -2363,12 +2362,8 @@
                 backgroundColor: null,
                 scale: 2,
                 logging: false,
-                onclone: function(clonedDoc) {
-                    const clonedContainer = clonedDoc.querySelector('.certificate-container');
-                    clonedContainer.style.backgroundImage = 'none';
-                    clonedContainer.style.backgroundColor = '#fff8dc';
-                    clonedContainer.style.border = '3px solid #d4af37';
-                }
+                // 保留原始背景图片
+                removeContainer: false
             }).then(canvas => {
                 closeModal();
                 
