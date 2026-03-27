@@ -1,0 +1,2398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校园螺钿非遗书签</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --chinese-red: #c41e3a;
+            --ivory-white: #fff8dc;
+            --mother-of-pearl: linear-gradient(135deg, #f0e6d2 0%, #d8c3a5 25%, #e8d5b7 50%, #c9b8d4 75%, #a8d8ea 100%);
+            --sakura-pink: #ffb7c5;
+            --gold: #d4af37;
+            --text-dark: #2c1810;
+            --wood-brown: #8b4513;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #fff9f9 0%, #fdf2f2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 183, 197, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(255, 183, 197, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 40% 80%, rgba(255, 183, 197, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 70% 20%, rgba(255, 183, 197, 0.1) 0%, transparent 20%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 100vw;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1;
+        }
+        
+        .page-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        .start-title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            color: var(--chinese-red);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--chinese-red) 0%, #e85a71 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sub-title {
+            font-size: 1.3rem;
+            color: var(--wood-brown);
+            letter-spacing: 3px;
+            line-height: 1.6;
+        }
+
+        .start-image {
+            width: 220px;
+            height: 220px;
+            background: var(--mother-of-pearl);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 40px;
+            border: 5px solid var(--sakura-pink);
+            box-shadow: 0 10px 30px rgba(255, 183, 197, 0.3);
+            position: relative;
+        }
+
+        #start-page {
+            position: relative;
+        }
+
+        .sakura-decoration {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.6;
+            animation: float 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .sakura-decoration:nth-child(1) {
+            top: 5%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .sakura-decoration.sakura-2 {
+            top: 10%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+
+        .sakura-decoration.sakura-3 {
+            bottom: 15%;
+            left: 15%;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-10px) rotate(10deg);
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .sakura-falling {
+            position: fixed;
+            font-size: 1.5rem;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fall 10s linear infinite;
+        }
+
+        .start-image-content {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: var(--mother-of-pearl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .start-image-content .icon {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .start-image-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--chinese-red);
+        }
+
+        .start-image-content p {
+            font-size: 1rem;
+            color: var(--wood-brown);
+        }
+
+        .game-intro {
+            background: linear-gradient(135deg, var(--ivory-white) 0%, #fff5f5 100%);
+            padding: 25px 35px;
+            border-radius: 20px;
+            border: 3px solid var(--sakura-pink);
+            max-width: 650px;
+            margin: 0 auto 30px;
+            box-shadow: 0 8px 20px rgba(255, 183, 197, 0.3);
+            position: relative;
+        }
+
+        .game-intro::before {
+            content: '🌸';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 1.5rem;
+        }
+
+        .game-intro::after {
+            content: '🌸';
+            position: absolute;
+            bottom: -15px;
+            right: 20px;
+            font-size: 1.5rem;
+        }
+
+        .game-intro h3 {
+            color: var(--chinese-red);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+
+        .game-intro p {
+            line-height: 1.8;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--chinese-red) 0%, #e85a71 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(196, 30, 58, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(196, 30, 58, 0.4);
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: var(--text-dark);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--ivory-white);
+            color: var(--text-dark);
+            border: 2px solid var(--gold);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gold);
+            color: var(--text-dark);
+        }
+
+        .map-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .map-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--chinese-red);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .map-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 10px auto 0;
+        }
+
+        .campus-map {
+            background: url('./images/campus-map.png') no-repeat center center;
+            background-size: cover;
+            border-radius: 20px;
+            min-height: 700px;
+            position: relative;
+            margin: 0;
+        }
+
+        .landmark {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .landmark::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gold) 0%, rgba(212, 175, 55, 0.5) 50%, var(--gold) 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--gold), 0 0 30px rgba(212, 175, 55, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .landmark:hover::before {
+            box-shadow: 0 0 25px var(--gold), 0 0 50px rgba(212, 175, 55, 0.7);
+        }
+
+        .landmark.played {
+            opacity: 0.7;
+            filter: grayscale(70%);
+        }
+
+        .landmark.played::before {
+            background: linear-gradient(135deg, #999 0%, rgba(153, 153, 153, 0.5) 50%, #999 100%);
+            box-shadow: none;
+            animation: none;
+        }
+
+        .landmark.played::after {
+            content: '✓';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #4caf50;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .landmark-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .landmark-name {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            text-align: center;
+            z-index: 1;
+            position: relative;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .landmark-1 { top: 63%; left: 23%; }
+        .landmark-2 { top: 63%; left: 43%; }
+        .landmark-3 { top: 44%; left: 63%; }
+        .landmark-4 { top: 43%; left: 32%; }
+
+        .game-container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--ivory-white);
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+        }
+
+        .game-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .game-info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .game-canvas {
+            background: var(--ivory-white);
+            border: 3px solid var(--gold);
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-instructions {
+            background: var(--ivory-white);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .game-instructions h4 {
+            color: var(--chinese-red);
+            margin-bottom: 10px;
+        }
+
+        .game-instructions ul {
+            list-style-position: inside;
+            line-height: 1.8;
+        }
+
+        .certificate-container {
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            min-height: 700px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .certificate-container.primary {
+            background-image: url('./images/certificate-bronze.png');
+        }
+
+        .certificate-container.intermediate {
+            background-image: url('./images/certificate-silver.png');
+        }
+
+        .certificate-container.advanced {
+            background-image: url('./images/certificate-gold.png');
+        }
+
+        .certificate-container::before {
+            content: '🌸';
+            position: absolute;
+            top: -20px;
+            left: 30px;
+            font-size: 2rem;
+        }
+
+        .certificate-container::after {
+            content: '🌸';
+            position: absolute;
+            bottom: -20px;
+            right: 30px;
+            font-size: 2rem;
+        }
+
+        .certificate-title {
+            font-size: 2rem;
+            color: var(--chinese-red);
+            text-align: center;
+            margin-bottom: 30px;
+            letter-spacing: 5px;
+            background: linear-gradient(135deg, var(--chinese-red) 0%, #e85a71 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .certificate-content {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            text-align: right;
+            line-height: 2;
+            font-size: 1.1rem;
+            max-width: 300px;
+        }
+
+        .certificate-content p {
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            color: var(--chinese-red);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .certificate-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, var(--chinese-red) 0%, #e85a71 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(196, 30, 58, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--ivory-white);
+            padding: 30px;
+            border-radius: 20px;
+            border: 3px solid var(--gold);
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            color: var(--chinese-red);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-text {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--ivory-white);
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--chinese-red);
+        }
+
+        .fish-game-canvas {
+            width: 600px;
+            height: 400px;
+            background: linear-gradient(180deg, #87CEEB 0%, #4169E1 100%);
+            border: 3px solid var(--gold);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .fish-game-canvas::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.1) 100%);
+            pointer-events: none;
+        }
+
+        .fish {
+            position: absolute;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.1s;
+            user-select: none;
+        }
+
+        .player-fish {
+            font-size: 2.5rem;
+            position: absolute;
+            transition: left 0.1s, top 0.1s;
+        }
+
+        .fish-score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .fish-timer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1.2rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .tetris-canvas {
+            width: 300px;
+            height: 400px;
+            background: #1a1a2e;
+            border: 3px solid var(--gold);
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(15, 1fr);
+            gap: 1px;
+            padding: 2px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tetris-cell {
+            background: #0f0f23;
+            border: 1px solid #2a2a4a;
+        }
+
+        .tetris-cell.filled {
+            border: 1px solid var(--gold);
+        }
+
+        .tetris-info {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .tetris-info-item {
+            text-align: center;
+        }
+
+        .tetris-info-item h4 {
+            color: var(--chinese-red);
+            margin-bottom: 5px;
+        }
+
+        .tetris-info-item p {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .stack-canvas {
+            width: 400px;
+            height: 500px;
+            background: var(--mother-of-pearl);
+            border: 3px solid var(--gold);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stack-block {
+            position: absolute;
+            background: linear-gradient(135deg, #f8f4e3 0%, #e8e4d0 50%, #f0ead6 100%);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .stack-block:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .stack-base {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(135deg, #8b4513 0%, #a0522d 50%, #8b4513 100%);
+            border-top: 2px solid var(--gold);
+        }
+
+        .sliding-canvas {
+            width: 400px;
+            height: 400px;
+            background: #f5f5dc;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .sliding-tile {
+            background: linear-gradient(135deg, #f8f4e3 0%, #e8e4d0 50%, #f0ead6 100%);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .sliding-tile:hover {
+            background: linear-gradient(135deg, #fff8dc 0%, #ffd700 100%);
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sliding-tile.empty {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .sliding-info {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .sub-title {
+                font-size: 1rem;
+            }
+
+            .start-image {
+                width: 150px;
+                height: 150px;
+            }
+
+            .game-intro {
+                padding: 15px 20px;
+            }
+
+            .landmark {
+                width: 60px;
+                height: 60px;
+            }
+
+            .landmark-icon {
+                font-size: 1.3rem;
+            }
+
+            .landmark-name {
+                font-size: 0.6rem;
+            }
+
+            .fish-game-canvas {
+                width: 100%;
+                height: 300px;
+            }
+
+            .tetris-canvas {
+                width: 250px;
+                height: 500px;
+            }
+
+            .stack-canvas {
+                width: 100%;
+                height: 400px;
+            }
+
+            .sliding-canvas {
+                width: 300px;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page page-center active" id="start-page">
+            <div class="sakura-decoration">🌸</div>
+            <div class="sakura-decoration sakura-2">🌸</div>
+            <div class="sakura-decoration sakura-3">🌸</div>
+            <div class="start-title">
+                <h1 class="main-title">樱韵螺钿·校园地标探索</h1>
+                <p class="sub-title">探索校园地标 · 玩趣味小游戏 · 获得非遗螺钿证书</p>
+            </div>
+            <div class="start-image">
+                <div class="start-image-content">
+                    <div class="icon"><img src="./images/complete-logo.png" alt="校徽" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>
+                </div>
+            </div>
+            <div class="game-intro">
+                <h3>🎮 游戏玩法</h3>
+                <p>探索校园4个地标（思源湖、图书馆、学思楼、图文信息楼），每个地标对应一个小游戏。完成游戏获得能量，累计能量达到不同等级，即可获得对应等级的精美非遗证书！</p>
+                <p><strong>证书等级：</strong></p>
+                <p>🥉 铜级证书：累计能量达到 100</p>
+                <p>🥈 银级证书：累计能量达到 200</p>
+                <p>🥇 金级证书：累计能量达到 300</p>
+            </div>
+            <button class="btn btn-primary start-btn" onclick="startGame()">🌸 开始探索 🌸</button>
+        </div>
+
+        <div class="page" id="map-page">
+            <div class="sakura-decoration" style="top: 5%; left: 5%;">🌸</div>
+            <div class="sakura-decoration sakura-2" style="top: 10%; right: 10%;">🌸</div>
+            <div class="map-container">
+                <div style="position: relative;">
+                    <h2 class="map-title">🗺️ 校园地图 🌸</h2>
+                    <div class="energy-display" style="position: absolute; top: 0; right: 0; padding: 8px 12px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 2px solid var(--gold); font-size: 0.9rem; font-weight: bold; color: var(--chinese-red);">
+                        ⚡ 能量: <span id="map-total-energy">0</span>
+                    </div>
+                </div>
+                <div class="campus-map" id="campus-map">
+                    <div class="landmark landmark-1" data-id="1" onclick="openGame(1)">
+                        <span class="landmark-icon">📍</span>
+                        <span class="landmark-name">思源湖</span>
+                    </div>
+                    <div class="landmark landmark-2" data-id="2" onclick="openGame(2)">
+                        <span class="landmark-icon">📍</span>
+                        <span class="landmark-name">图书馆</span>
+                    </div>
+                    <div class="landmark landmark-3" data-id="3" onclick="openGame(3)">
+                        <span class="landmark-icon">📍</span>
+                        <span class="landmark-name">学思楼</span>
+                    </div>
+                    <div class="landmark landmark-4" data-id="4" onclick="openGame(4)">
+                        <span class="landmark-icon">📍</span>
+                        <span class="landmark-name">图文信息楼</span>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-gold" onclick="checkCertificate()">查看证书</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="game-page">
+            <div class="sakura-decoration" style="top: 3%; left: 3%;">🌸</div>
+            <div class="sakura-decoration sakura-2" style="top: 5%; right: 5%;">🌸</div>
+            <div class="game-container">
+                <div class="game-header">
+                    <button class="btn btn-secondary" onclick="goBackToMap()">返回地图</button>
+                    <div class="game-info">
+                        <div class="game-info-item">
+                            <span>⚡</span>
+                            <span id="current-energy">0</span>
+                        </div>
+                        <div class="game-info-item">
+                            <span>🏆</span>
+                            <span id="total-energy">0</span>
+                        </div>
+                    </div>
+                </div>
+                <h2 id="game-title" style="color: var(--chinese-red); margin-bottom: 20px;">游戏标题</h2>
+                <div class="game-instructions">
+                    <h4>📖 游戏说明</h4>
+                    <ul id="game-instructions-list">
+                    </ul>
+                </div>
+                <div class="game-canvas" id="game-canvas">
+                </div>
+                <button class="btn btn-primary" id="start-game-btn" onclick="startMiniGame()">开始游戏</button>
+            </div>
+        </div>
+
+        <div class="page page-center" id="certificate-page">
+            <div class="sakura-decoration" style="top: 5%; left: 5%;">🌸</div>
+            <div class="sakura-decoration sakura-2" style="top: 8%; right: 8%;">🌸</div>
+            <div class="sakura-decoration sakura-3" style="bottom: 15%; left: 10%;">🌸</div>
+            <div class="certificate-container primary">
+                <h1 class="certificate-title">🌸 校园螺钿非遗证书 🌸</h1>
+                <div class="certificate-content">
+                    <p>授予：<span class="highlight" id="player-name">探索者</span></p>
+                    <p>累计能量：<span class="highlight" id="certificate-energy">0</span></p>
+                    <p>证书等级：<span class="highlight" id="bookmark-level">暂无</span></p>
+                    <p>获得时间：<span class="highlight" id="certificate-date">2026年3月24日</span></p>
+                </div>
+            </div>
+            <div class="certificate-actions">
+                <button class="btn btn-primary" onclick="restartGame()">🔄 再玩一次</button>
+                <button class="share-btn" onclick="shareCertificate()">📤 分享证书</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-icon" id="modal-icon">🌸</div>
+            <h3 class="modal-title" id="modal-title">提示</h3>
+            <p class="modal-text" id="modal-text">内容</p>
+            <button class="btn btn-primary" id="modal-btn" onclick="closeModal()">确定</button>
+        </div>
+    </div>
+
+    <div class="modal" id="name-modal">
+        <div class="modal-content">
+            <div class="modal-icon">✍️</div>
+            <h3 class="modal-title">请输入你的名字</h3>
+            <input type="text" class="modal-input" id="player-name-input" placeholder="请输入你的名字" maxlength="10">
+            <button class="btn btn-primary" onclick="savePlayerName()">确定</button>
+        </div>
+    </div>
+
+    <script>
+        let gameData = {
+            totalEnergy: 0,
+            playedGames: [],
+            playerName: '探索者'
+        };
+
+        const landmarksData = {
+            1: { name: '思源湖', game: 'fishGame', icon: '🌊' },
+            2: { name: '图书馆', game: 'tetrisGame', icon: '📚' },
+            3: { name: '学思楼', game: 'stackGame', icon: '🏫' },
+            4: { name: '图文信息楼', game: 'slidingGame', icon: '🏢' }
+        };
+
+        let currentGame = null;
+        let currentEnergy = 0;
+        let gameInterval = null;
+        let gameActive = false;
+        let fishGameTimer = null;
+
+        let tetrisBoard = null;
+        let tetrisCurrentPiece = null;
+        let tetrisEnergyDisplay = null;
+        let tetrisLinesDisplay = null;
+        let tetrisLinesCleared = 0;
+
+        function init() {
+            loadGameData();
+            showPage('start-page');
+            updateUI();
+            createSakuraEffect();
+        }
+
+        function createSakuraEffect() {
+            setInterval(() => {
+                if (Math.random() < 0.3) {
+                    const sakura = document.createElement('div');
+                    sakura.className = 'sakura-falling';
+                    sakura.textContent = '🌸';
+                    sakura.style.left = Math.random() * 100 + 'vw';
+                    sakura.style.animationDuration = (8 + Math.random() * 4) + 's';
+                    document.body.appendChild(sakura);
+                    
+                    setTimeout(() => {
+                        sakura.remove();
+                    }, 12000);
+                }
+            }, 500);
+        }
+
+        function loadGameData() {
+            const saved = localStorage.getItem('luodianBookmarkData');
+            if (saved) {
+                const loadedData = JSON.parse(saved);
+                gameData.totalEnergy = loadedData.totalEnergy || 0;
+                gameData.playedGames = loadedData.playedGames || [];
+                gameData.playerName = loadedData.playerName || '探索者';
+            }
+        }
+
+        function saveGameData() {
+            localStorage.setItem('luodianBookmarkData', JSON.stringify(gameData));
+        }
+
+        function startGame() {
+            showPage('map-page');
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+                page.style.display = 'none';
+            });
+            const page = document.getElementById(pageId);
+            if (page.classList.contains('page-center')) {
+                page.style.display = 'flex';
+            } else {
+                page.style.display = 'block';
+            }
+            page.classList.add('active');
+        }
+
+        function openGame(landmarkId) {
+            const landmark = landmarksData[landmarkId];
+            if (!landmark) return;
+
+            if (gameData.playedGames.includes(landmark.game)) {
+                showModal('🎮', '游戏已完成', '你已经玩过这个游戏了！请尝试其他地标。');
+                return;
+            }
+
+            currentGame = landmark.game;
+            currentEnergy = 0;
+
+            document.getElementById('game-title').textContent = landmark.name;
+            document.getElementById('current-energy').textContent = '0';
+            document.getElementById('total-energy').textContent = gameData.totalEnergy;
+
+            const instructions = getGameInstructions(landmark.game);
+            document.getElementById('game-instructions-list').innerHTML = instructions;
+
+            document.getElementById('game-canvas').innerHTML = '';
+            document.getElementById('start-game-btn').style.display = 'inline-block';
+
+            showPage('game-page');
+        }
+
+        function getGameInstructions(gameType) {
+            const instructions = {
+                fishGame: `
+                    <li>使用方向键或鼠标移动你的鱼</li>
+                    <li>初始鱼大小40px，可以吃比自己小的鱼</li>
+                    <li>吃掉比自己小的鱼获得能量（每条+5能量）</li>
+                    <li>吃掉比自己小的鱼后体积增大（+2px）</li>
+                    <li>碰到比自己大的鱼或炸弹游戏结束</li>
+                    <li>游戏时间60秒，鱼会越来越大，炸弹越来越多</li>
+                `,
+                tetrisGame: `
+                    <li>使用方向键移动和旋转方块</li>
+                    <li>填满一行消除获得能量</li>
+                    <li>方块堆到顶部游戏结束</li>
+                    <li>尽可能消除更多行获得高分</li>
+                `,
+                stackGame: `
+                    <li>方块自动左右移动</li>
+                    <li>点击确认键让方块停下</li>
+                    <li>未对齐的部分会被切掉</li>
+                    <li>堆叠越高获得的能量越多</li>
+                `,
+                slidingGame: `
+                    <li>点击空白格相邻的方块移动</li>
+                    <li>将数字按1-8顺序排列</li>
+                    <li>完成排列获得能量</li>
+                    <li>用时越短获得能量越多</li>
+                `
+            };
+            return instructions[gameType] || '';
+        }
+
+        function startMiniGame() {
+            if (gameActive) return;
+
+            document.getElementById('start-game-btn').style.display = 'none';
+            gameActive = true;
+            currentEnergy = 0;
+
+            switch(currentGame) {
+                case 'fishGame':
+                    startFishGame();
+                    break;
+                case 'tetrisGame':
+                    startTetrisGame();
+                    break;
+                case 'stackGame':
+                    startStackGame();
+                    break;
+                case 'slidingGame':
+                    startSlidingGame();
+                    break;
+            }
+        }
+
+        function startFishGame() {
+            const canvas = document.getElementById('game-canvas');
+            canvas.innerHTML = `
+                <div class="fish-game-canvas" id="fish-canvas">
+                    <div class="fish-timer">时间: <span id="fish-time">60</span>s</div>
+                    <div class="fish-score">能量: <span id="fish-energy">0</span></div>
+                    <div class="player-fish" id="player-fish">🐟</div>
+                </div>
+            `;
+
+            const fishCanvas = document.getElementById('fish-canvas');
+            const playerFish = document.getElementById('player-fish');
+            const energyDisplay = document.getElementById('fish-energy');
+            const timeDisplay = document.getElementById('fish-time');
+
+            let playerX = 275;
+            let playerY = 175;
+            let playerSize = 40;
+            let timeLeft = 60;
+            let fishes = [];
+            let gameElapsedTime = 0;
+
+            playerFish.style.left = playerX + 'px';
+            playerFish.style.top = playerY + 'px';
+
+            function getFishTypes() {
+                const sizeMultiplier = 1 + gameElapsedTime * 0.02;
+                const bombWeight = 2 + Math.floor(gameElapsedTime / 15);
+                
+                return [
+                    { emoji: '🐠', size: Math.floor(15 * sizeMultiplier), energy: 5, weight: 3 },
+                    { emoji: '🐡', size: Math.floor(25 * sizeMultiplier), energy: 5, weight: 3 },
+                    { emoji: '🦈', size: Math.floor(35 * sizeMultiplier), energy: 5, weight: 2 },
+                    { emoji: '🐋', size: Math.floor(50 * sizeMultiplier), energy: 5, weight: 2 },
+                    { emoji: '💣', size: Math.floor(25 * sizeMultiplier), energy: 0, isBomb: true, weight: bombWeight }
+                ];
+            }
+
+            function createFish() {
+                const fishTypes = getFishTypes();
+                const totalWeight = fishTypes.reduce((sum, type) => sum + type.weight, 0);
+                let random = Math.random() * totalWeight;
+                let type;
+                
+                for (let i = 0; i < fishTypes.length; i++) {
+                    random -= fishTypes[i].weight;
+                    if (random <= 0) {
+                        type = fishTypes[i];
+                        break;
+                    }
+                }
+                
+                let fishY;
+                let attempts = 0;
+                
+                do {
+                    fishY = Math.random() * 350;
+                    attempts++;
+                } while (Math.abs(fishY - playerY) < 100 && attempts < 10);
+                
+                const fish = {
+                    x: Math.random() > 0.5 ? -type.size - 50 : 600 + 50,
+                    y: fishY,
+                    size: type.size,
+                    energy: type.energy,
+                    emoji: type.emoji,
+                    isBomb: type.isBomb || false,
+                    direction: Math.random() > 0.5 ? 1 : -1,
+                    speed: 1 + Math.random() * 2
+                };
+
+                if (fish.x < 0) {
+                    fish.direction = 1;
+                } else {
+                    fish.direction = -1;
+                }
+
+                const fishElement = document.createElement('div');
+                fishElement.className = 'fish';
+                fishElement.textContent = fish.emoji;
+                fishElement.style.fontSize = fish.size + 'px';
+                fishElement.style.left = fish.x + 'px';
+                fishElement.style.top = fish.y + 'px';
+                fishCanvas.appendChild(fishElement);
+                fish.element = fishElement;
+
+                fishes.push(fish);
+            }
+
+            function updateFishes() {
+                fishes.forEach((fish, index) => {
+                    fish.x += fish.direction * fish.speed;
+                    fish.element.style.left = fish.x + 'px';
+
+                    if (fish.x < -fish.size - 100 || fish.x > 700) {
+                        fish.element.remove();
+                        fishes.splice(index, 1);
+                        return;
+                    }
+
+                    const dx = (playerX + playerSize/2) - (fish.x + fish.size/2);
+                    const dy = (playerY + playerSize/2) - (fish.y + fish.size/2);
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    const collisionDistance = (playerSize + fish.size) / 2 * 0.8;
+
+                    if (distance < collisionDistance) {
+                        if (fish.isBomb) {
+                            endGame();
+                            return;
+                        }
+                        
+                        if (playerSize > fish.size) {
+                            currentEnergy += 5;
+                            energyDisplay.textContent = currentEnergy;
+                            fish.element.remove();
+                            fishes.splice(index, 1);
+                            playerSize += 2;
+                            playerFish.style.fontSize = playerSize + 'px';
+                        } else {
+                            endGame();
+                        }
+                    }
+                });
+            }
+
+            function movePlayer(dx, dy) {
+                playerX = Math.max(0, Math.min(600 - playerSize, playerX + dx));
+                playerY = Math.max(0, Math.min(400 - playerSize, playerY + dy));
+                playerFish.style.left = playerX + 'px';
+                playerFish.style.top = playerY + 'px';
+            }
+
+            document.addEventListener('keydown', function handleKeyDown(e) {
+                if (!gameActive) {
+                    document.removeEventListener('keydown', handleKeyDown);
+                    return;
+                }
+                switch(e.key) {
+                    case 'ArrowUp': movePlayer(0, -10); break;
+                    case 'ArrowDown': movePlayer(0, 10); break;
+                    case 'ArrowLeft': movePlayer(-10, 0); break;
+                    case 'ArrowRight': movePlayer(10, 0); break;
+                }
+            });
+
+            fishCanvas.addEventListener('mousemove', function(e) {
+                if (!gameActive) return;
+                const rect = fishCanvas.getBoundingClientRect();
+                playerX = e.clientX - rect.left - playerSize/2;
+                playerY = e.clientY - rect.top - playerSize/2;
+                playerX = Math.max(0, Math.min(600 - playerSize, playerX));
+                playerY = Math.max(0, Math.min(400 - playerSize, playerY));
+                playerFish.style.left = playerX + 'px';
+                playerFish.style.top = playerY + 'px';
+            });
+
+            fishGameTimer = setInterval(() => {
+                timeLeft--;
+                gameElapsedTime++;
+                timeDisplay.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    endGame();
+                    return;
+                }
+            }, 1000);
+
+            for (let i = 0; i < 5; i++) {
+                createFish();
+            }
+
+            gameInterval = setInterval(() => {
+                if (Math.random() < 0.3) {
+                    createFish();
+                }
+
+                updateFishes();
+            }, 100);
+        }
+
+        function startTetrisGame() {
+            const canvas = document.getElementById('game-canvas');
+            canvas.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                    <div style="display: flex; gap: 20px; justify-content: center; align-items: flex-start;">
+                        <div class="tetris-canvas" id="tetris-canvas"></div>
+                        <div class="tetris-info">
+                            <div class="tetris-info-item">
+                                <h4>能量</h4>
+                                <p id="tetris-energy">0</p>
+                            </div>
+                            <div class="tetris-info-item">
+                                <h4>行数</h4>
+                                <p id="tetris-lines">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button class="btn btn-secondary" onclick="moveTetrisLeft()">← 左移</button>
+                        <button class="btn btn-secondary" onclick="rotateTetris()">↑ 旋转</button>
+                        <button class="btn btn-secondary" onclick="moveTetrisRight()">→ 右移</button>
+                        <button class="btn btn-secondary" onclick="moveTetrisDown()">↓ 下移</button>
+                    </div>
+                </div>
+            `;
+
+            const tetrisCanvas = document.getElementById('tetris-canvas');
+            const energyDisplay = document.getElementById('tetris-energy');
+            const linesDisplay = document.getElementById('tetris-lines');
+
+            const COLS = 10;
+            const ROWS = 15;
+            tetrisBoard = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+            tetrisCurrentPiece = null;
+            currentEnergy = 0;
+            tetrisLinesCleared = 0;
+            tetrisEnergyDisplay = energyDisplay;
+            tetrisLinesDisplay = linesDisplay;
+
+            const colors = [
+                '#00f0f0',
+                '#0000f0',
+                '#f0a000',
+                '#f0f000',
+                '#00f000',
+                '#00f000',
+                '#a000f0'
+            ];
+
+            const pieces = [
+                [[1,1,1,1]],
+                [[1,1],[1,1]],
+                [[1,1,1],[0,1,0]],
+                [[1,1,1],[1,0,0]],
+                [[1,1,1],[0,0,1]],
+                [[1,1,0],[0,1,1]],
+                [[0,1,1],[1,1,0]]
+            ];
+
+            function createBoard() {
+                tetrisCanvas.innerHTML = '';
+                for (let r = 0; r < ROWS; r++) {
+                    for (let c = 0; c < COLS; c++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'tetris-cell';
+                        cell.dataset.row = r;
+                        cell.dataset.col = c;
+                        tetrisCanvas.appendChild(cell);
+                    }
+                }
+            }
+
+            function drawBoard() {
+                const cells = tetrisCanvas.querySelectorAll('.tetris-cell');
+                cells.forEach(cell => {
+                    const r = parseInt(cell.dataset.row);
+                    const c = parseInt(cell.dataset.col);
+                    if (tetrisBoard[r][c]) {
+                        cell.style.backgroundColor = colors[tetrisBoard[r][c] - 1];
+                        cell.style.border = '1px solid var(--gold)';
+                        cell.classList.add('filled');
+                    } else {
+                        cell.style.backgroundColor = '#0f0f23';
+                        cell.style.border = '1px solid #2a2a4a';
+                        cell.classList.remove('filled');
+                    }
+                });
+            }
+
+            function drawPiece() {
+                if (!tetrisCurrentPiece) return;
+                tetrisCurrentPiece.shape.forEach((row, r) => {
+                    row.forEach((value, c) => {
+                        if (value) {
+                            const cell = tetrisCanvas.querySelector(`[data-row="${tetrisCurrentPiece.y + r}"][data-col="${tetrisCurrentPiece.x + c}"]`);
+                            if (cell) {
+                                cell.style.backgroundColor = colors[tetrisCurrentPiece.color - 1];
+                                cell.style.border = '1px solid var(--gold)';
+                                cell.classList.add('filled');
+                            }
+                        }
+                    });
+                });
+            }
+
+            function createPiece() {
+                const pieceIndex = Math.floor(Math.random() * pieces.length);
+                tetrisCurrentPiece = {
+                    shape: pieces[pieceIndex],
+                    x: Math.floor(COLS / 2) - 1,
+                    y: 0,
+                    color: pieceIndex + 1
+                };
+
+                if (!isValidMove(0, 0)) {
+                    endGame();
+                }
+            }
+
+            function isValidMove(dx, dy, newShape = null) {
+                const shape = newShape || tetrisCurrentPiece.shape;
+                for (let r = 0; r < shape.length; r++) {
+                    for (let c = 0; c < shape[r].length; c++) {
+                        if (shape[r][c]) {
+                            const newX = tetrisCurrentPiece.x + c + dx;
+                            const newY = tetrisCurrentPiece.y + r + dy;
+
+                            if (newX < 0 || newX >= COLS || newY >= ROWS) {
+                                return false;
+                            }
+
+                            if (newY >= 0 && tetrisBoard[newY][newX]) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function rotatePiece() {
+                const newShape = tetrisCurrentPiece.shape[0].map((_, i) =>
+                    tetrisCurrentPiece.shape.map(row => row[i]).reverse()
+                );
+
+                if (isValidMove(0, 0, newShape)) {
+                    tetrisCurrentPiece.shape = newShape;
+                }
+            }
+
+            function movePiece(dx, dy) {
+                if (isValidMove(dx, dy)) {
+                    tetrisCurrentPiece.x += dx;
+                    tetrisCurrentPiece.y += dy;
+                    return true;
+                }
+                return false;
+            }
+
+            function lockPiece() {
+                tetrisCurrentPiece.shape.forEach((row, r) => {
+                    row.forEach((value, c) => {
+                        if (value) {
+                            const boardY = tetrisCurrentPiece.y + r;
+                            const boardX = tetrisCurrentPiece.x + c;
+                            if (boardY >= 0) {
+                                tetrisBoard[boardY][boardX] = tetrisCurrentPiece.color;
+                            }
+                        }
+                    });
+                });
+
+                clearLines();
+                createPiece();
+            }
+
+            function clearLines() {
+                let lines = 0;
+                for (let r = ROWS - 1; r >= 0; r--) {
+                    if (tetrisBoard[r].every(cell => cell !== 0)) {
+                        tetrisBoard.splice(r, 1);
+                        tetrisBoard.unshift(Array(COLS).fill(0));
+                        lines++;
+                        r++;
+                    }
+                }
+
+                if (lines > 0) {
+                    tetrisLinesCleared += lines;
+                    const energyGain = lines * 10;
+                    currentEnergy += energyGain;
+                    tetrisEnergyDisplay.textContent = currentEnergy;
+                    tetrisLinesDisplay.textContent = tetrisLinesCleared;
+                }
+            }
+
+            function gameLoop() {
+                if (!gameActive) return;
+                if (!movePiece(0, 1)) {
+                    lockPiece();
+                }
+
+                drawBoard();
+                drawPiece();
+            }
+
+            createBoard();
+            createPiece();
+
+            document.addEventListener('keydown', function handleKeyDown(e) {
+                if (!gameActive) {
+                    document.removeEventListener('keydown', handleKeyDown);
+                    return;
+                }
+                switch(e.key) {
+                    case 'ArrowLeft': moveTetrisLeft(); break;
+                    case 'ArrowRight': moveTetrisRight(); break;
+                    case 'ArrowDown': moveTetrisDown(); break;
+                    case 'ArrowUp': rotateTetris(); break;
+                }
+            });
+
+            gameInterval = setInterval(gameLoop, 300);
+        }
+
+        function moveTetrisLeft() {
+            if (!gameActive || !tetrisCurrentPiece) return;
+            const COLS = 10;
+            const ROWS = 15;
+            
+            function isValidMove(dx, dy, newShape = null) {
+                const shape = newShape || tetrisCurrentPiece.shape;
+                for (let r = 0; r < shape.length; r++) {
+                    for (let c = 0; c < shape[r].length; c++) {
+                        if (shape[r][c]) {
+                            const newX = tetrisCurrentPiece.x + c + dx;
+                            const newY = tetrisCurrentPiece.y + r + dy;
+
+                            if (newX < 0 || newX >= COLS || newY >= ROWS) {
+                                return false;
+                            }
+
+                            if (newY >= 0 && tetrisBoard[newY][newX]) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            if (isValidMove(-1, 0)) {
+                tetrisCurrentPiece.x -= 1;
+                const tetrisCanvas = document.getElementById('tetris-canvas');
+                const colors = ['#00f0f0', '#0000f0', '#f0a000', '#f0f000', '#00f000', '#f00000', '#a000f0'];
+                
+                function drawBoard() {
+                    const cells = tetrisCanvas.querySelectorAll('.tetris-cell');
+                    cells.forEach(cell => {
+                        const r = parseInt(cell.dataset.row);
+                        const c = parseInt(cell.dataset.col);
+                        if (tetrisBoard[r][c]) {
+                            cell.style.backgroundColor = colors[tetrisBoard[r][c] - 1];
+                            cell.style.border = '1px solid var(--gold)';
+                            cell.classList.add('filled');
+                        } else {
+                            cell.style.backgroundColor = '#0f0f23';
+                            cell.style.border = '1px solid #2a2a4a';
+                            cell.classList.remove('filled');
+                        }
+                    });
+                }
+
+                function drawPiece() {
+                    if (!tetrisCurrentPiece) return;
+                    tetrisCurrentPiece.shape.forEach((row, r) => {
+                        row.forEach((value, c) => {
+                            if (value) {
+                                const cell = tetrisCanvas.querySelector(`[data-row="${tetrisCurrentPiece.y + r}"][data-col="${tetrisCurrentPiece.x + c}"]`);
+                                if (cell) {
+                                    cell.style.backgroundColor = colors[tetrisCurrentPiece.color - 1];
+                                    cell.style.border = '1px solid var(--gold)';
+                                    cell.classList.add('filled');
+                                }
+                            }
+                        });
+                    });
+                }
+
+                drawBoard();
+                drawPiece();
+            }
+        }
+
+        function moveTetrisRight() {
+            if (!gameActive || !tetrisCurrentPiece) return;
+            const COLS = 10;
+            const ROWS = 15;
+            
+            function isValidMove(dx, dy, newShape = null) {
+                const shape = newShape || tetrisCurrentPiece.shape;
+                for (let r = 0; r < shape.length; r++) {
+                    for (let c = 0; c < shape[r].length; c++) {
+                        if (shape[r][c]) {
+                            const newX = tetrisCurrentPiece.x + c + dx;
+                            const newY = tetrisCurrentPiece.y + r + dy;
+
+                            if (newX < 0 || newX >= COLS || newY >= ROWS) {
+                                return false;
+                            }
+
+                            if (newY >= 0 && tetrisBoard[newY][newX]) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            if (isValidMove(1, 0)) {
+                tetrisCurrentPiece.x += 1;
+                const tetrisCanvas = document.getElementById('tetris-canvas');
+                const colors = ['#00f0f0', '#0000f0', '#f0a000', '#f0f000', '#00f000', '#f00000', '#a000f0'];
+                
+                function drawBoard() {
+                    const cells = tetrisCanvas.querySelectorAll('.tetris-cell');
+                    cells.forEach(cell => {
+                        const r = parseInt(cell.dataset.row);
+                        const c = parseInt(cell.dataset.col);
+                        if (tetrisBoard[r][c]) {
+                            cell.style.backgroundColor = colors[tetrisBoard[r][c] - 1];
+                            cell.style.border = '1px solid var(--gold)';
+                            cell.classList.add('filled');
+                        } else {
+                            cell.style.backgroundColor = '#0f0f23';
+                            cell.style.border = '1px solid #2a2a4a';
+                            cell.classList.remove('filled');
+                        }
+                    });
+                }
+
+                function drawPiece() {
+                    if (!tetrisCurrentPiece) return;
+                    tetrisCurrentPiece.shape.forEach((row, r) => {
+                        row.forEach((value, c) => {
+                            if (value) {
+                                const cell = tetrisCanvas.querySelector(`[data-row="${tetrisCurrentPiece.y + r}"][data-col="${tetrisCurrentPiece.x + c}"]`);
+                                if (cell) {
+                                    cell.style.backgroundColor = colors[tetrisCurrentPiece.color - 1];
+                                    cell.style.border = '1px solid var(--gold)';
+                                    cell.classList.add('filled');
+                                }
+                            }
+                        });
+                    });
+                }
+
+                drawBoard();
+                drawPiece();
+            }
+        }
+
+        function moveTetrisDown() {
+            if (!gameActive || !tetrisCurrentPiece) return;
+            const COLS = 10;
+            const ROWS = 15;
+            
+            function isValidMove(dx, dy, newShape = null) {
+                const shape = newShape || tetrisCurrentPiece.shape;
+                for (let r = 0; r < shape.length; r++) {
+                    for (let c = 0; c < shape[r].length; c++) {
+                        if (shape[r][c]) {
+                            const newX = tetrisCurrentPiece.x + c + dx;
+                            const newY = tetrisCurrentPiece.y + r + dy;
+
+                            if (newX < 0 || newX >= COLS || newY >= ROWS) {
+                                return false;
+                            }
+
+                            if (newY >= 0 && tetrisBoard[newY][newX]) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            if (isValidMove(0, 1)) {
+                tetrisCurrentPiece.y += 1;
+                const tetrisCanvas = document.getElementById('tetris-canvas');
+                const colors = ['#00f0f0', '#0000f0', '#f0a000', '#f0f000', '#00f000', '#f00000', '#a000f0'];
+                
+                function drawBoard() {
+                    const cells = tetrisCanvas.querySelectorAll('.tetris-cell');
+                    cells.forEach(cell => {
+                        const r = parseInt(cell.dataset.row);
+                        const c = parseInt(cell.dataset.col);
+                        if (tetrisBoard[r][c]) {
+                            cell.style.backgroundColor = colors[tetrisBoard[r][c] - 1];
+                            cell.style.border = '1px solid var(--gold)';
+                            cell.classList.add('filled');
+                        } else {
+                            cell.style.backgroundColor = '#0f0f23';
+                            cell.style.border = '1px solid #2a2a4a';
+                            cell.classList.remove('filled');
+                        }
+                    });
+                }
+
+                function drawPiece() {
+                    if (!tetrisCurrentPiece) return;
+                    tetrisCurrentPiece.shape.forEach((row, r) => {
+                        row.forEach((value, c) => {
+                            if (value) {
+                                const cell = tetrisCanvas.querySelector(`[data-row="${tetrisCurrentPiece.y + r}"][data-col="${tetrisCurrentPiece.x + c}"]`);
+                                if (cell) {
+                                    cell.style.backgroundColor = colors[tetrisCurrentPiece.color - 1];
+                                    cell.style.border = '1px solid var(--gold)';
+                                    cell.classList.add('filled');
+                                }
+                            }
+                        });
+                    });
+                }
+
+                drawBoard();
+                drawPiece();
+            }
+        }
+
+        function rotateTetris() {
+            if (!gameActive || !tetrisCurrentPiece) return;
+            const COLS = 10;
+            const ROWS = 15;
+            
+            function isValidMove(dx, dy, newShape = null) {
+                const shape = newShape || tetrisCurrentPiece.shape;
+                for (let r = 0; r < shape.length; r++) {
+                    for (let c = 0; c < shape[r].length; c++) {
+                        if (shape[r][c]) {
+                            const newX = tetrisCurrentPiece.x + c + dx;
+                            const newY = tetrisCurrentPiece.y + r + dy;
+
+                            if (newX < 0 || newX >= COLS || newY >= ROWS) {
+                                return false;
+                            }
+
+                            if (newY >= 0 && tetrisBoard[newY][newX]) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            const newShape = tetrisCurrentPiece.shape[0].map((_, i) =>
+                tetrisCurrentPiece.shape.map(row => row[i]).reverse()
+            );
+
+            if (isValidMove(0, 0, newShape)) {
+                tetrisCurrentPiece.shape = newShape;
+                const tetrisCanvas = document.getElementById('tetris-canvas');
+                const colors = ['#00f0f0', '#0000f0', '#f0a000', '#f0f000', '#00f000', '#f00000', '#a000f0'];
+                
+                function drawBoard() {
+                    const cells = tetrisCanvas.querySelectorAll('.tetris-cell');
+                    cells.forEach(cell => {
+                        const r = parseInt(cell.dataset.row);
+                        const c = parseInt(cell.dataset.col);
+                        if (tetrisBoard[r][c]) {
+                            cell.style.backgroundColor = colors[tetrisBoard[r][c] - 1];
+                            cell.style.border = '1px solid var(--gold)';
+                            cell.classList.add('filled');
+                        } else {
+                            cell.style.backgroundColor = '#0f0f23';
+                            cell.style.border = '1px solid #2a2a4a';
+                            cell.classList.remove('filled');
+                        }
+                    });
+                }
+
+                function drawPiece() {
+                    if (!tetrisCurrentPiece) return;
+                    tetrisCurrentPiece.shape.forEach((row, r) => {
+                        row.forEach((value, c) => {
+                            if (value) {
+                                const cell = tetrisCanvas.querySelector(`[data-row="${tetrisCurrentPiece.y + r}"][data-col="${tetrisCurrentPiece.x + c}"]`);
+                                if (cell) {
+                                    cell.style.backgroundColor = colors[tetrisCurrentPiece.color - 1];
+                                    cell.style.border = '1px solid var(--gold)';
+                                    cell.classList.add('filled');
+                                }
+                            }
+                        });
+                    });
+                }
+
+                drawBoard();
+                drawPiece();
+            }
+        }
+
+        function startStackGame() {
+            const canvas = document.getElementById('game-canvas');
+            canvas.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                    <div style="display: flex; gap: 20px; justify-content: center; align-items: flex-start;">
+                        <div class="stack-canvas" id="stack-canvas">
+                            <div class="stack-base"></div>
+                        </div>
+                        <div class="tetris-info">
+                            <div class="tetris-info-item">
+                                <h4>能量</h4>
+                                <p id="stack-energy">0</p>
+                            </div>
+                            <div class="tetris-info-item">
+                                <h4>层数</h4>
+                                <p id="stack-level">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button class="btn btn-primary" onclick="confirmStackBlock()">✓ 确认下落</button>
+                    </div>
+                </div>
+            `;
+
+            const stackCanvas = document.getElementById('stack-canvas');
+            const energyDisplay = document.getElementById('stack-energy');
+            const levelDisplay = document.getElementById('stack-level');
+
+            let blocks = [];
+            let currentBlock = null;
+            currentEnergy = 0;
+            let level = 0;
+            let direction = 1;
+            let speed = 3;
+            let baseWidth = 150;
+
+            function createBlock() {
+                const widthReduction = Math.min(level * 20, 130);
+                const width = Math.max(30, baseWidth - widthReduction + Math.random() * 15);
+                const height = 30;
+                const x = Math.random() * (400 - width);
+                const y = 0;
+
+                const hue = Math.random() * 360;
+                currentBlock = {
+                    x: x,
+                    y: y,
+                    width: width,
+                    height: height,
+                    color: `linear-gradient(135deg, hsl(${hue}, 70%, 60%) 0%, hsl(${hue}, 50%, 80%) 50%, hsl(${hue}, 70%, 60%) 100%)`,
+                    falling: false
+                };
+
+                const blockElement = document.createElement('div');
+                blockElement.className = 'stack-block';
+                blockElement.style.width = width + 'px';
+                blockElement.style.height = height + 'px';
+                blockElement.style.left = x + 'px';
+                blockElement.style.top = y + 'px';
+                blockElement.style.background = currentBlock.color;
+                stackCanvas.appendChild(blockElement);
+                currentBlock.element = blockElement;
+            }
+
+            function updateBlock() {
+                if (!currentBlock) return;
+
+                if (!currentBlock.falling) {
+                    currentBlock.x += direction * speed;
+
+                    if (currentBlock.x + currentBlock.width > 400 || currentBlock.x < 0) {
+                        direction *= -1;
+                    }
+
+                    currentBlock.element.style.left = currentBlock.x + 'px';
+                } else {
+                    currentBlock.y += 8;
+                    currentBlock.element.style.top = currentBlock.y + 'px';
+                    checkCollision();
+                }
+            }
+
+            function dropBlock() {
+                if (!currentBlock || currentBlock.falling) return;
+                currentBlock.falling = true;
+            }
+
+            function checkCollision() {
+                if (!currentBlock || !currentBlock.falling) return;
+
+                const groundLevel = 450 - level * 30;
+                
+                if (currentBlock.y + currentBlock.height >= groundLevel) {
+                    if (blocks.length > 0) {
+                        const lastBlock = blocks[blocks.length - 1];
+                        const overlap = Math.min(
+                            currentBlock.x + currentBlock.width,
+                            lastBlock.x + lastBlock.width
+                        ) - Math.max(currentBlock.x, lastBlock.x);
+
+                        if (overlap > 0) {
+                            const newWidth = overlap;
+                            const newX = Math.max(currentBlock.x, lastBlock.x);
+
+                            currentBlock.width = newWidth;
+                            currentBlock.x = newX;
+                            currentBlock.element.style.width = newWidth + 'px';
+                            currentBlock.element.style.left = newX + 'px';
+
+                            if (newWidth < 15) {
+                                endGame();
+                                return;
+                            }
+                        } else {
+                            endGame();
+                            return;
+                        }
+                    }
+
+                    blocks.push(currentBlock);
+                    level++;
+                    levelDisplay.textContent = level;
+                    currentEnergy += 3 + level * 1;
+                    energyDisplay.textContent = currentEnergy;
+
+                    speed += 0.5;
+                    createBlock();
+                }
+            }
+
+            window.dropStackBlock = dropBlock;
+            window.confirmStackBlock = dropBlock;
+
+            createBlock();
+
+            gameInterval = setInterval(updateBlock, 20);
+        }
+
+        function startSlidingGame() {
+            const canvas = document.getElementById('game-canvas');
+            canvas.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                    <h3 style="color: var(--chinese-red);">选择难度</h3>
+                    <div style="display: flex; gap: 20px;">
+                        <button class="btn btn-primary" onclick="startSlidingGameWithDifficulty('easy')">简单版</button>
+                        <button class="btn btn-gold" onclick="startSlidingGameWithDifficulty('hard')">复杂版 (双倍能量)</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startSlidingGameWithDifficulty(difficulty) {
+            const canvas = document.getElementById('game-canvas');
+            canvas.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                    <div style="display: flex; gap: 20px; justify-content: center; align-items: flex-start;">
+                        <div class="sliding-canvas" id="sliding-canvas"></div>
+                        <div class="sliding-info">
+                            <div class="tetris-info-item">
+                                <h4>能量</h4>
+                                <p id="sliding-energy">0</p>
+                            </div>
+                            <div class="tetris-info-item">
+                                <h4>时间</h4>
+                                <p id="sliding-time">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button class="btn btn-secondary" onclick="resetSlidingGame('${difficulty}')">🔄 换一局</button>
+                        ${difficulty === 'hard' ? '<button class="btn btn-primary" onclick="startSlidingGameWithDifficulty(\'easy\')">🔄 切换到简单版</button>' : ''}
+                    </div>
+                </div>
+            `;
+
+            const slidingCanvas = document.getElementById('sliding-canvas');
+            const energyDisplay = document.getElementById('sliding-energy');
+            const timeDisplay = document.getElementById('sliding-time');
+
+            const SIZE = 3;
+            let tiles = [];
+            let emptyPos = { row: 2, col: 2 };
+            currentEnergy = 0;
+            let timeElapsed = 0;
+            let isSolved = false;
+            let gameDifficulty = difficulty;
+
+            function createTiles() {
+                slidingCanvas.innerHTML = '';
+                tiles = [];
+                
+                if (gameDifficulty === 'easy') {
+                    tiles = [
+                        [1, 2, 3],
+                        [4, 0, 5],
+                        [6, 7, 8]
+                    ];
+                    emptyPos = { row: 1, col: 1 };
+                } else {
+                    const numbers = Array.from({ length: 8 }, (_, i) => i + 1);
+                    shuffleArray(numbers);
+                    
+                    for (let r = 0; r < SIZE; r++) {
+                        tiles[r] = [];
+                        for (let c = 0; c < SIZE; c++) {
+                            if (r === SIZE - 1 && c === SIZE - 1) {
+                                tiles[r][c] = 0;
+                            } else {
+                                tiles[r][c] = numbers[r * SIZE + c];
+                            }
+                        }
+                    }
+                    
+                    emptyPos = { row: SIZE - 1, col: SIZE - 1 };
+                }
+
+                renderTiles();
+            }
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+
+            function renderTiles() {
+                slidingCanvas.innerHTML = '';
+                for (let r = 0; r < SIZE; r++) {
+                    for (let c = 0; c < SIZE; c++) {
+                        const tile = document.createElement('div');
+                        tile.className = 'sliding-tile';
+                        if (tiles[r][c] === 0) {
+                            tile.classList.add('empty');
+                        } else {
+                            tile.textContent = tiles[r][c];
+                            tile.onclick = () => moveTile(r, c);
+                        }
+                        slidingCanvas.appendChild(tile);
+                    }
+                }
+            }
+
+            function moveTile(row, col) {
+                if (!gameActive || isSolved) return;
+
+                const dr = Math.abs(row - emptyPos.row);
+                const dc = Math.abs(col - emptyPos.col);
+
+                if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
+                    tiles[emptyPos.row][emptyPos.col] = tiles[row][col];
+                    tiles[row][col] = 0;
+                    emptyPos = { row, col };
+                    renderTiles();
+                    checkSolved();
+                }
+            }
+
+            function checkSolved() {
+                let count = 1;
+                for (let r = 0; r < SIZE; r++) {
+                    for (let c = 0; c < SIZE; c++) {
+                        if (r === SIZE - 1 && c === SIZE - 1) {
+                            if (tiles[r][c] !== 0) return;
+                        } else {
+                            if (tiles[r][c] !== count) return;
+                            count++;
+                        }
+                    }
+                }
+
+                isSolved = true;
+                const baseEnergy = 80;
+                const timeBonus = Math.max(0, 200 - timeElapsed);
+                const energyMultiplier = gameDifficulty === 'hard' ? 2 : 1;
+                currentEnergy = (baseEnergy + timeBonus) * energyMultiplier;
+                const slidingEnergyDisplay = document.getElementById('sliding-energy');
+                slidingEnergyDisplay.textContent = currentEnergy;
+
+                setTimeout(() => {
+                    const bonusText = gameDifficulty === 'hard' ? '（双倍能量奖励！）' : '';
+                    showModal('🎉', '恭喜完成！', `你成功完成了华容道！获得能量：${currentEnergy} ${bonusText}`);
+                    setTimeout(() => endGame(), 2000);
+                }, 500);
+            }
+
+            createTiles();
+
+            gameInterval = setInterval(() => {
+                if (!isSolved) {
+                    timeElapsed++;
+                    timeDisplay.textContent = timeElapsed;
+                }
+            }, 1000);
+        }
+
+        function resetSlidingGame(difficulty = 'easy') {
+            if (!gameActive) return;
+            
+            clearInterval(gameInterval);
+            gameInterval = null;
+            
+            startSlidingGameWithDifficulty(difficulty);
+        }
+
+        function endGame() {
+            gameActive = false;
+            if (gameInterval) {
+                clearInterval(gameInterval);
+                gameInterval = null;
+            }
+            if (fishGameTimer) {
+                clearInterval(fishGameTimer);
+                fishGameTimer = null;
+            }
+
+            if (currentEnergy < 25) {
+                currentEnergy = 25;
+            }
+
+            gameData.totalEnergy += currentEnergy;
+            if (!gameData.playedGames.includes(currentGame)) {
+                gameData.playedGames.push(currentGame);
+            }
+            saveGameData();
+
+            showModal('⚡', '游戏结束！', `本次获得能量：${currentEnergy}\n累计能量：${gameData.totalEnergy}`);
+
+            setTimeout(() => {
+                goBackToMap();
+                
+                if (gameData.playedGames.length >= 4) {
+                    setTimeout(() => {
+                        showModal('🎉', '恭喜你！', '成功探索校园地标，完成小游戏挑战！');
+                        setTimeout(() => {
+                            checkCertificate();
+                        }, 2000);
+                    }, 800);
+                }
+            }, 2000);
+        }
+
+        function goBackToMap() {
+            if (gameActive) {
+                gameActive = false;
+                if (gameInterval) {
+                    clearInterval(gameInterval);
+                    gameInterval = null;
+                }
+            }
+            updateUI();
+            showPage('map-page');
+        }
+
+        function showCompletionScreen() {
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            let bookmarkLevel = '铜级';
+            let bookmarkColor = '#cd7f32';
+            
+            if (gameData.totalEnergy >= 300) {
+                bookmarkLevel = '金级';
+                bookmarkColor = '#ffd700';
+            } else if (gameData.totalEnergy >= 200) {
+                bookmarkLevel = '银级';
+                bookmarkColor = '#c0c0c0';
+            }
+            
+            let html = '<div style="text-align: center;">' +
+                '<div class="modal-icon">🎉</div>' +
+                '<h3 class="modal-title" style="color: var(--chinese-red);">恭喜完成所有游戏！</h3>' +
+                '<div class="modal-text">' +
+                '<p style="font-size: 1.1rem; margin-bottom: 15px;">你总共获得了 <span style="color: var(--chinese-red); font-weight: bold;">' + gameData.totalEnergy + '</span> 能量</p>' +
+                '<p style="font-size: 1.1rem; margin-bottom: 20px;">获得 <span style="color: ' + bookmarkColor + '; font-weight: bold;">' + bookmarkLevel + '</span> 非遗书签</p>' +
+                '<div style="width: 150px; height: 150px; margin: 20px auto; background: ' + bookmarkColor + '; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">' +
+                bookmarkLevel +
+                '</div>' +
+                '<button class="btn btn-primary" onclick="downloadCertificate()" style="margin-top: 20px;">下载专属证书</button>' +
+                '</div>' +
+                '</div>';
+            
+            modalContent.innerHTML = html;
+            modal.style.display = 'flex';
+        }
+
+        function downloadCertificate() {
+            if (gameData.playerName === '探索者') {
+                const modal = document.getElementById('modal');
+                const modalContent = document.getElementById('modal-content');
+                
+                modalContent.innerHTML = `
+                    <div style="text-align: center;">
+                        <h3 class="modal-title" style="color: var(--chinese-red);">请输入你的名字</h3>
+                        <input type="text" class="modal-input" id="player-name-input" placeholder="请输入你的名字" style="margin: 15px 0;">
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                            <button class="btn btn-primary" onclick="confirmName()">确认</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                generateCertificate();
+            }
+        }
+
+        function confirmName() {
+            const nameInput = document.getElementById('player-name-input');
+            const name = nameInput.value.trim();
+            
+            if (name) {
+                gameData.playerName = name;
+                saveGameData();
+                closeModal();
+                generateCertificate();
+            } else {
+                alert('请输入你的名字');
+            }
+        }
+
+        function generateCertificate() {
+            showPage('certificate-page');
+        }
+
+        function updateUI() {
+            document.querySelectorAll('.landmark').forEach(landmark => {
+                const id = parseInt(landmark.dataset.id);
+                if (gameData.playedGames.includes(landmarksData[id].game)) {
+                    landmark.classList.add('played');
+                } else {
+                    landmark.classList.remove('played');
+                }
+            });
+            
+            const mapTotalEnergy = document.getElementById('map-total-energy');
+            if (mapTotalEnergy) {
+                mapTotalEnergy.textContent = gameData.totalEnergy;
+            }
+        }
+
+        function checkCertificate() {
+            if (gameData.totalEnergy === 0) {
+                showModal('💡', '提示', '你还没有获得任何能量，快去玩游戏吧！');
+                return;
+            }
+
+            if (gameData.playerName === '探索者') {
+                document.getElementById('name-modal').classList.add('active');
+            } else {
+                showCertificate();
+            }
+        }
+
+        function savePlayerName() {
+            const nameInput = document.getElementById('player-name-input');
+            const name = nameInput.value.trim();
+            if (name) {
+                gameData.playerName = name;
+                saveGameData();
+                document.getElementById('name-modal').classList.remove('active');
+                showCertificate();
+            }
+        }
+
+        function showCertificate() {
+            document.getElementById('player-name').textContent = gameData.playerName;
+            document.getElementById('certificate-energy').textContent = gameData.totalEnergy;
+
+            let level = '暂无';
+            let certificateClass = 'primary';
+
+            if (gameData.totalEnergy >= 300) {
+                level = '🥇 金级';
+                certificateClass = 'advanced';
+            } else if (gameData.totalEnergy >= 200) {
+                level = '🥈 银级';
+                certificateClass = 'intermediate';
+            } else if (gameData.totalEnergy >= 100) {
+                level = '🥉 铜级';
+                certificateClass = 'primary';
+            }
+
+            document.getElementById('bookmark-level').textContent = level;
+
+            // 设置证书底图
+            const certificateContainer = document.querySelector('.certificate-container');
+            certificateContainer.className = 'certificate-container ' + certificateClass;
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+            document.getElementById('certificate-date').textContent = dateStr;
+
+            showPage('certificate-page');
+        }
+
+        function shareCertificate() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '樱韵螺钿·校园地标探索证书',
+                    text: `我在樱韵螺钿·校园地标探索中获得了${gameData.totalEnergy}能量，等级：${document.getElementById('bookmark-level').textContent}`,
+                    url: window.location.href
+                })
+                .catch((error) => console.log('分享失败:', error));
+            } else {
+                // 复制链接到剪贴板
+                navigator.clipboard.writeText(window.location.href)
+                .then(() => {
+                    showModal('📋', '分享成功', '证书链接已复制到剪贴板！');
+                })
+                .catch((error) => {
+                    showModal('❌', '分享失败', '复制链接失败，请手动复制地址栏链接。');
+                });
+            }
+        }
+
+        function showModal(icon, title, text) {
+            document.getElementById('modal-icon').textContent = icon;
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-text').textContent = text;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function restartGame() {
+            gameData = {
+                totalEnergy: 0,
+                playedGames: [],
+                playerName: '探索者'
+            };
+            saveGameData();
+            updateUI();
+            showPage('start-page');
+        }
+
+        init();
+    </script>
+</body>
+</html>
